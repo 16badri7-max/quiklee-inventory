@@ -116,14 +116,14 @@ const getProductDetail = async (req, res, next) => {
     let alerts = [];
 
     if (db.query) {
-      const [historyRows] = await db.query('SELECT * FROM inventory_history WHERE product_id = ? ORDER BY change_date DESC', [id]);
+      const [historyRows] = await db.query('SELECT * FROM inventory_history WHERE product_id = ? ORDER BY updated_at DESC', [id]);
       history = historyRows || [];
 
       const [alertsRows] = await db.query('SELECT * FROM alerts WHERE product_id = ? ORDER BY created_at DESC', [id]);
       alerts = alertsRows || [];
     } else {
       history = await new Promise((resolve, reject) => {
-        db.all('SELECT * FROM inventory_history WHERE product_id = ? ORDER BY change_date DESC', [id], (err, rows) => {
+        db.all('SELECT * FROM inventory_history WHERE product_id = ? ORDER BY updated_at DESC', [id], (err, rows) => {
           if (err) reject(err); else resolve(rows || []);
         });
       });

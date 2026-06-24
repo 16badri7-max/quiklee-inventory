@@ -8,8 +8,8 @@ import api, { setAuthToken } from './services/api';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('admin');
+  const [username, setUsername] = useState('badri');
+  const [password, setPassword] = useState('1234567');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -83,7 +83,7 @@ function App() {
             </Button>
           </form>
           <Typography variant="body2" color="text.secondary" align="center" mt={2}>
-            Hint: Use <b>admin</b> / <b>admin</b>
+            Hint: Use <b>badri</b> / <b>1234567</b>
           </Typography>
         </Paper>
       </Box>
