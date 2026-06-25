@@ -110,30 +110,20 @@ const getProductDetail = async (req, res, next) => {
     const id = req.params.id;
     const product = await Product.findById(id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
-    const db = pool.promise ? await pool.promise() : pool;
-    let history = [];
-    let alerts = [];
-    if (db.query) {
-      const [historyRows] = await db.query('SELECT * FROM inventory_history WHERE product_id = ? ORDER BY updated_at DESC', [id]);
-      history = historyRows || [];
-      const [alertsRows] = await db.query('SELECT * FROM alerts WHERE product_id = ? ORDER BY created_at DESC', [id]);
-      alerts = alertsRows || [];
-    } else {
-      history = await new Promise((resolve, reject) => {
-        db.all('SELECT * FROM inventory_history WHERE product_id = ? ORDER BY updated_at DESC', [id], (err, rows) => {
-          if (err) reject(err); else resolve(rows || []);
-        });
-      });
-      alerts = await new Promise((resolve, reject) => {
-        db.all('SELECT * FROM alerts WHERE product_id = ? ORDER BY created_at DESC', [id], (err, rows) => {
-          if (err) reject(err); else resolve(rows || []);
-        });
-      });
-    }
+
+    const historyResult = await pool.query(
+      'SELECT * FROM inventory_history WHERE product_id = $1 ORDER BY updated_at DESC',
+      [id]
+    );
+    const alertsResult = await pool.query(
+      'SELECT * FROM alerts WHERE product_id = $1 ORDER BY created_at DESC',
+      [id]
+    );
+
     res.json({
       ...product,
-      history,
-      alerts
+      history: historyResult.rows || [],
+      alerts: alertsResult.rows || []
     });
   } catch (err) {
     next(err);
