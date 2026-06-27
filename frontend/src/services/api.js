@@ -74,9 +74,15 @@ export const getAlerts = async () => {
   return data;
 };
 
+export const scanAlerts = async () => {
+  const { data } = await api.post('/alerts/scan');
+  return data;
+};
+
 export const getReportSummary = async () => {
   const { data } = await api.get('/reports/summary');
   return data;
 };
 
 export default api;
+

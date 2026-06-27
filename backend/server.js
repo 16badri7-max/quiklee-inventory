@@ -13,7 +13,10 @@ const sanitizeInput = require('./middleware/sanitizeMiddleware');
 const app = express();
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: function(origin, callback) {
+    // Allow all origins (fixes CORS for any frontend URL)
+    callback(null, true);
+  },
   credentials: true
 }));
 app.use(express.json());
@@ -47,3 +50,5 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
+
+
